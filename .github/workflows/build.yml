@@ -7,12 +7,8 @@ on:
 
 jobs:
   linux_build_job:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
-    runs-on: ${{ matrix.os }}
-    name: Build on ${{ matrix.os }} (GNU Make)
+    runs-on: ubuntu-22.04
+    name: Build on ubuntu-22.04 (GNU Make)
     steps:
       - uses: actions/checkout@v4
       - name: Setup tools and dependencies
@@ -34,7 +30,7 @@ jobs:
         uses: msys2/setup-msys2@v2
         with:
           update: true
-          install: mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-soapysdr mingw-w64-x86_64-libusb mingw-w64-x86_64-libiio mingw-w64-x86_64-libad9361-iio
+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-soapysdr mingw-w64-x86_64-libusb mingw-w64-x86_64-libiio mingw-w64-x86_64-libad9361-iio
           cache: true
           msystem: MINGW64
           path-type: minimal
