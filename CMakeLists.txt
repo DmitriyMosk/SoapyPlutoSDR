@@ -1,7 +1,7 @@
 ########################################################################
 # Project setup
 ########################################################################
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.20)
 project(SoapyPlutoSDR CXX)
 
 # select build type to get optimization flags
@@ -31,15 +31,15 @@ endif()
 
 include_directories(${LibIIO_INCLUDE_DIRS})
 
-#enable c++11 features
+#enable c++20 features
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
     #C++11 is a required language feature for this project
     include(CheckCXXCompilerFlag)
-    CHECK_CXX_COMPILER_FLAG("-std=c++11" HAS_STD_CXX11)
-    if(HAS_STD_CXX11)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    else(HAS_STD_CXX11)
+    CHECK_CXX_COMPILER_FLAG("-std=c++20" HAS_STD_CXX20)
+    if(HAS_STD_CXX20)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+    else(HAS_STD_CXX20)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wc++11-extensions")
     endif()
 
@@ -68,8 +68,8 @@ endif()
 # Find libusb
 ########################################################################
 find_package(LibUSB)
-
 if(LibUSB_FOUND)
+    add_compile_options(-Wno-zero-length-array)
     message(STATUS "LibUSB_INCLUDE_DIRS: ${LibUSB_INCLUDE_DIRS}")
     message(STATUS "LibUSB_LIBRARIES: ${LibUSB_LIBRARIES}")
     message(STATUS "LibUSB_DEFINITIONS: ${LibUSB_DEFINITIONS}")
