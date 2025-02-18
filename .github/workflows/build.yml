@@ -1,4 +1,4 @@
-name: Build check (Linux & Windows with pacman)
+name: Build check (Linux & Windows with pacman using GNU)
 
 on:
   push:
@@ -12,39 +12,39 @@ jobs:
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
-    name: Build on ${{ matrix.os }}
+    name: Build on ${{ matrix.os }} (GNU Make)
     steps:
       - uses: actions/checkout@v4
       - name: Setup tools and dependencies
         run: |
           sudo apt-get update -q -y
-          sudo apt-get install -y --no-install-recommends cmake ninja-build
+          sudo apt-get install -y --no-install-recommends cmake make
           sudo apt-get install -q -y libsoapysdr-dev libusb-1.0-0-dev libiio-dev libad9361-dev
       - name: Configure
-        run: cmake -GNinja -B build
+        run: cmake -G "Unix Makefiles" -B build
       - name: Build
         run: cmake --build build
 
   windows_build_job:
     runs-on: windows-latest
-    name: Build on Windows (MSYS2 pacman)
+    name: Build on Windows (MSYS2 pacman with MinGW Makefiles)
     steps:
       - uses: actions/checkout@v4
       - name: Setup MSYS2
         uses: msys2/setup-msys2@v2
         with:
           update: true
-          install: >
-            mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-ninja
-            mingw-w64-x86_64-soapysdr
-            mingw-w64-x86_64-libusb
-            mingw-w64-x86_64-libiio
-            mingw-w64-x86_64-libad9361-iio
-          cache: pacman
+          install: mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-soapysdr mingw-w64-x86_64-libusb mingw-w64-x86_64-libiio mingw-w64-x86_64-libad9361-iio
+          cache: true
+          msystem: MINGW64
+          path-type: minimal
+          pacboy: false
+          release: true
+          location: RUNNER_TEMP
+          platform-check-severity: fatal
       - name: Configure
         shell: msys2 {0}
-        run: cmake -G Ninja -B build
+        run: cmake -G "MinGW Makefiles" -B build
       - name: Build
         shell: msys2 {0}
         run: cmake --build build
